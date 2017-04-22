@@ -3,26 +3,24 @@ package;
 import starling.display.Quad;
 import starling.utils.Color;
 import starling.events.Event;
+import starling.events.TouchEvent;
 import starling.display.Sprite;
+import starling.events.Touch;
+import starling.events.TouchEvent;
+import starling.events.TouchPhase;
 
 import nape.space.Space;
 import nape.space.Broadphase;
 import nape.phys.Body;
 import nape.phys.BodyList;
 import nape.phys.BodyType;
-import nape.phys.Compound;
 import nape.geom.GeomPoly;
 import nape.shape.Edge;
 import nape.shape.Polygon;
 import nape.geom.Vec2;
-import nape.util.Debug;
-import nape.util.BitmapDebug;
-import nape.util.ShapeDebug;
-import nape.constraint.PivotJoint;
 
 import openfl.Lib;
-
-typedef SoftBody = Compound;
+import openfl.geom.Point;
 
 class Battle extends Sprite
 {
@@ -31,7 +29,7 @@ class Battle extends Sprite
 
 	private var space:Space;
 	private var prevTime:Int;
-  private var softBodies:Array<SoftBody>;
+  private var cells:Array<Cell>;
 
 	public function new()
   {
@@ -56,26 +54,41 @@ class Battle extends Sprite
     floor.shapes.add(new Polygon(Polygon.rect(50, (h - 50), (w - 100), 1)));
     floor.space = space;
 
-    softBodies = [];
+    cells = [];
 
-    var poly = new GeomPoly(Polygon.regular(30, 30, 20));
-    var x = 0;
-    var y = 5;
-        var body = polygonalBody(
-            Vec2.get(w/2 + x * 60, h - (y + 0.5) * 60),
-            /*thickness*/ 10, /*discretisation*/ 15,
-            /*frequency*/ 30, /*damping*/ 10,
-            poly
-        );
-        softBodies.push(body);
-        body.space = space;
+    var cell:Cell = new Cell(100, 100, 20, 1, space);
+    var cell2:Cell = new Cell(100, 200, 25, 2, space);
+    cells.push(cell);
+    cells.push(cell2);
 
     addEventListener(Event.ENTER_FRAME, onEnterFrame);
+    addEventListener(TouchEvent.TOUCH, onTouch);
+
+    var touchQuad:Quad = new Quad(w, h);
+    touchQuad.alpha = 0; // only used to get touch events
+    addChildAt(touchQuad, 0);
+  }
+
+  private function onTouch(event:TouchEvent):Void
+  {
+    var touch:Touch = event.getTouch(this, TouchPhase.HOVER);
+    if (touch == null) touch = event.getTouch(this, TouchPhase.BEGAN);
+    if (touch == null) touch = event.getTouch(this, TouchPhase.MOVED);
+
+    if (touch != null)
+    {
+        var localPos:Point = touch.getLocation(this);
+        cells[0].moveToward(localPos.x, localPos.y);
+    }
   }
 
   private function preStep(deltaTime:Float):Void
   {
-
+    for (body in space.liveBodies)
+    {
+      body.velocity.x *= 0.95;
+      body.velocity.y *= 0.95;
+    }
   }
 
   private function postUpdate(deltaTime:Float)
@@ -115,118 +128,5 @@ class Battle extends Sprite
       postUpdate(deltaTime * 0.001);
       Main.debug.flush();
     }
-  }
-
-  function polygonalBody(position:Vec2, thickness:Float, discretisation:Float, frequency:Float, damping:Float, poly:GeomPoly):SoftBody
-  {
-    var body = new SoftBody();
-
-    var segments = [];
-    var outerPoints = [];
-    var innerPoints = [];
-    var refEdges = [];
-    body.userData.refEdges = refEdges;
-
-    var inner = poly.inflate(-thickness);
-
-    var start = poly.current();
-    do 
-    {
-      var current = poly.current();
-      poly.skipForward(1);
-      var next = poly.current();
-
-      var iCurrent = inner.current();
-      inner.skipForward(1);
-      var iNext = inner.current();
-
-      var delta = next.sub(current);
-      var iDelta = iNext.sub(iCurrent);
-
-      var length = Math.max(delta.length, iDelta.length);
-      var numSegments = Math.ceil(length / discretisation);
-      var gap = (1 / numSegments);
-
-      for (i in 0...numSegments)
-      {
-        var segment = new Body();
-
-        var outerPoint = current.addMul(delta, gap * i);
-        var innerPoint = iCurrent.addMul(iDelta, gap * i);
-        var polygon = new Polygon([
-            outerPoint,
-            current.addMul(delta, gap * (i + 1), true),
-            iCurrent.addMul(iDelta, gap * (i + 1), true),
-            innerPoint
-        ]);
-        polygon.body = segment;
-        segment.compound = body;
-        segment.align();
-
-        segments.push(segment);
-        outerPoints.push(outerPoint);
-        innerPoints.push(innerPoint);
-
-        refEdges.push(polygon.edges.at(0));
-      }
-
-      delta.dispose();
-      iDelta.dispose();
-    }
-    while (poly.current() != start);
-
-    for (i in 0...segments.length)
-    {
-      var leftSegment = segments[(i - 1 + segments.length) % segments.length];
-      var rightSegment = segments[i];
-
-      var current = outerPoints[i];
-      var pivot = new PivotJoint(
-        leftSegment, rightSegment,
-        leftSegment.worldPointToLocal(current, true),
-        rightSegment.worldPointToLocal(current, true)
-      );
-      current.dispose();
-      pivot.compound = body;
-
-      current = innerPoints[i];
-      pivot = new PivotJoint(
-        leftSegment, rightSegment,
-        leftSegment.worldPointToLocal(current, true),
-        rightSegment.worldPointToLocal(current, true)
-      );
-      current.dispose();
-      pivot.compound = body;
-      pivot.stiff = false;
-      pivot.frequency = frequency;
-      pivot.damping = damping;
-
-      pivot.ignore = true;
-    }
-
-    inner.clear();
-
-    for (s in segments)
-    {
-      s.position.addeq(position);
-    }
-
-    body.userData.area = polygonalArea(body);
-
-    return body;
-  }
-
-  static var areaPoly = new GeomPoly();
-  static function polygonalArea(s:SoftBody):Float
-  {
-    var refEdges:Array<Edge> = s.userData.refEdges;
-    for (edge in refEdges)
-    {
-        areaPoly.push(edge.worldVertex1);
-    }
-    var ret = areaPoly.area();
-    areaPoly.clear();
-
-    return ret;
   }
 }

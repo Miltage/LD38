@@ -26,8 +26,6 @@ class Game extends Sprite
   {
     Game.assets = assets;
 
-    trace("started");
-
     var battle:Battle = new Battle();
     addChild(battle);
 
