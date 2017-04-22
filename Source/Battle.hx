@@ -8,6 +8,7 @@ import starling.display.Sprite;
 import starling.events.Touch;
 import starling.events.TouchEvent;
 import starling.events.TouchPhase;
+import starling.utils.Max;
 
 import nape.space.Space;
 import nape.space.Broadphase;
@@ -56,10 +57,12 @@ class Battle extends Sprite
 
     cells = [];
 
-    var cell:Cell = new Cell(100, 100, 20, 1, space);
-    var cell2:Cell = new Cell(100, 200, 25, 2, space);
-    cells.push(cell);
-    cells.push(cell2);
+    for (i in 0...5)
+    {
+      var cell:Cell = new Cell(Math.round(Math.random() * w), Math.round(Math.random() * h)
+        , 20 + Math.round(Math.random() * 10), Math.random() > .5 ? 1 : 2, space);
+      cells.push(cell);
+    }
 
     addEventListener(Event.ENTER_FRAME, onEnterFrame);
     addEventListener(TouchEvent.TOUCH, onTouch);
@@ -77,8 +80,8 @@ class Battle extends Sprite
 
     if (touch != null)
     {
-        var localPos:Point = touch.getLocation(this);
-        cells[0].moveToward(localPos.x, localPos.y);
+      var localPos:Point = touch.getLocation(this);
+      //cells[0].moveToward(localPos.x, localPos.y);
     }
   }
 
@@ -89,11 +92,40 @@ class Battle extends Sprite
       body.velocity.x *= 0.95;
       body.velocity.y *= 0.95;
     }
+
+    for (cell in cells)
+    {
+      var target = getClosestEnemy(cell);
+      if (target != null)
+      {
+        var p = target.getPosition();
+        cell.moveToward(p.x, p.y);
+      }
+    }
   }
 
   private function postUpdate(deltaTime:Float)
   {
 
+  }
+
+  private function getClosestEnemy(cell:Cell):Cell
+  {
+    var result = null;
+    var d = Max.INT_MAX_VALUE;
+    for (c in cells)
+    {
+      if (c != cell && c.getTeam() != cell.getTeam())
+      {
+        var dist = Vec2.distance(c.getPosition(), cell.getPosition());
+        if (dist < d)
+        {
+          result = c;
+          d = Math.round(dist);
+        }
+      }
+    }
+    return result;
   }
 
   private function onEnterFrame():Void

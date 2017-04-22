@@ -34,9 +34,30 @@ class Cell
 		for (body in compound.bodies)
 		{
 			var d = m.sub(body.position);
-			var len = Vec2.distance(body.position, m) * 10;
+			var len = Vec2.distance(body.position, m) * size / 4;
 			body.applyImpulse(Vec2.weak(d.x/len, d.y/len));
 		}
+	}
+
+	public function getPosition():Vec2
+	{
+		var p = Vec2.get(0, 0);
+		for (body in compound.bodies)
+		{
+			p.addeq(body.position);
+		}
+		p.muleq(1 / compound.bodies.length);
+		return p;
+	}
+
+	public function getSize():Int
+	{
+		return size;
+	}
+
+	public function getTeam():Int
+	{
+		return team;
 	}
 
 	private function polygonalBody(position:Vec2, thickness:Float, discretisation:Float, frequency:Float, damping:Float, poly:GeomPoly):SoftBody
