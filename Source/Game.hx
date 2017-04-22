@@ -20,11 +20,6 @@ class Game extends Sprite
   public function new()
   {
     super();
-
-    var quad:Quad = new Quad(200, 200, Color.RED);
-    quad.x = 100;
-    quad.y = 50;
-    addChild(quad);
   }
 
   public function start(assets:AssetManager):Void
@@ -32,6 +27,9 @@ class Game extends Sprite
     Game.assets = assets;
 
     trace("started");
+
+    var battle:Battle = new Battle();
+    addChild(battle);
 
     var image1:Image = new Image(Game.assets.getTexture("run"));
     image1.x = 0;

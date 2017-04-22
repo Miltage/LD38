@@ -18,7 +18,12 @@ import starling.utils.Max;
 import starling.utils.AssetManager;
 import starling.utils.RectangleUtil;
 
+import nape.util.Debug;
+import nape.util.ShapeDebug;
+
 class Main extends Sprite {
+
+  public static var debug:Debug;
   
   private var starling:Starling;
 
@@ -53,6 +58,9 @@ class Main extends Sprite {
 
     this.stage.addEventListener(Event.RESIZE, onResize, false, Max.INT_MAX_VALUE, true);
     starling.start();
+
+    debug = new ShapeDebug(stage.stageWidth, stage.stageHeight, stage.color);
+    addChild(debug.display);
   }
 
   private function loadAssets(onComplete:AssetManager->Void):Void

@@ -8,6 +8,7 @@
 	
 	<haxelib name="openfl" />
 	<haxelib name="starling" />
+	<haxelib name="nape" />
 	
 	<assets path="Assets" rename="assets" />
 	
