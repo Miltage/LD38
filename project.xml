@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="Ld38" package="com.sample.ld38" version="1.0.0" company="Company Name" />
+	<app main="Main" path="Export" file="Ld38" swf-version="12" />
+	
+	<source path="Source" />
+	
+	<haxelib name="openfl" />
+	<haxelib name="starling" />
+	
+	<assets path="Assets" rename="assets" />
+	
+</project>

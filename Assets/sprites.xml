@@ -1,0 +1,18 @@
+<TextureAtlas imagePath="sprites.png">
+	<SubTexture name="frame_00.png" x="0" y="54" width="49" height="52"/>
+	<SubTexture name="frame_01.png" x="0" y="0" width="49" height="52"/>
+	<SubTexture name="frame_02.png" x="51" y="162" width="49" height="52"/>
+	<SubTexture name="frame_03.png" x="153" y="108" width="49" height="52"/>
+	<SubTexture name="frame_04.png" x="153" y="54" width="49" height="52"/>
+	<SubTexture name="frame_05.png" x="153" y="0" width="49" height="52"/>
+	<SubTexture name="frame_06.png" x="102" y="162" width="49" height="52"/>
+	<SubTexture name="frame_07.png" x="102" y="108" width="49" height="52"/>
+	<SubTexture name="frame_08.png" x="102" y="54" width="49" height="52"/>
+	<SubTexture name="frame_09.png" x="102" y="0" width="49" height="52"/>
+	<SubTexture name="frame_10.png" x="153" y="162" width="49" height="52"/>
+	<SubTexture name="frame_11.png" x="51" y="108" width="49" height="52"/>
+	<SubTexture name="frame_12.png" x="51" y="54" width="49" height="52"/>
+	<SubTexture name="frame_13.png" x="51" y="0" width="49" height="52"/>
+	<SubTexture name="frame_14.png" x="0" y="162" width="49" height="52"/>
+	<SubTexture name="frame_15.png" x="0" y="108" width="49" height="52"/>
+</TextureAtlas>
