@@ -29,7 +29,7 @@ class Game extends Sprite
     var battle:Battle = new Battle();
     addChild(battle);
 
-    var image1:Image = new Image(Game.assets.getTexture("run"));
+    /*var image1:Image = new Image(Game.assets.getTexture("run"));
     image1.x = 0;
     image1.y = 0;
     addChild(image1);
@@ -39,6 +39,6 @@ class Game extends Sprite
     runner.x = 400;
     runner.y = 200;
     addChild(runner);
-    Starling.current.juggler.add(runner);
+    Starling.current.juggler.add(runner);*/
   }
 }

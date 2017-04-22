@@ -53,14 +53,17 @@ class Battle extends Sprite
 
     var floor = new Body(BodyType.STATIC);
     floor.shapes.add(new Polygon(Polygon.rect(50, (h - 50), (w - 100), 1)));
+    floor.shapes.add(new Polygon(Polygon.rect(50, 50, (w - 100), 1)));
+    floor.shapes.add(new Polygon(Polygon.rect(50, 50, 1, (h - 100))));
+    floor.shapes.add(new Polygon(Polygon.rect((w - 50), 50, 1, (h - 100))));
     floor.space = space;
 
     cells = [];
 
     for (i in 0...5)
     {
-      var cell:Cell = new Cell(Math.round(Math.random() * w), Math.round(Math.random() * h)
-        , 20 + Math.round(Math.random() * 10), Math.random() > .5 ? 1 : 2, space);
+      var cell:Cell = new Cell(Math.round(Constants.CenterX - Math.random() * w/2 + w/4), Math.round(Constants.CenterY - Math.random() * h/2 + h/4)
+        , 20 + Math.round(Math.random() * 20), Math.random() > .5 ? 1 : 2, space);
       cells.push(cell);
     }
 
