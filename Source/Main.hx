@@ -60,6 +60,7 @@ class Main extends Sprite {
     starling.start();
 
     debug = new ShapeDebug(stage.stageWidth, stage.stageHeight, stage.color);
+    debug.drawCollisionArbiters = true;
     addChild(debug.display);
   }
 

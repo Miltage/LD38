@@ -1,5 +1,11 @@
 package;
 
+import nape.callbacks.CbType;
+import nape.callbacks.CbEvent;
+import nape.callbacks.InteractionCallback;
+import nape.callbacks.InteractionListener;
+import nape.callbacks.PreCallback;
+import nape.callbacks.PreFlag;
 import starling.display.Quad;
 import starling.utils.Color;
 import starling.events.Event;
@@ -19,6 +25,8 @@ import nape.geom.GeomPoly;
 import nape.shape.Edge;
 import nape.shape.Polygon;
 import nape.geom.Vec2;
+import nape.callbacks.PreListener;
+import nape.callbacks.InteractionType;
 
 import openfl.Lib;
 import openfl.geom.Point;
@@ -31,6 +39,8 @@ class Battle extends Sprite
 	private var space:Space;
 	private var prevTime:Int;
   private var cells:Array<Cell>;
+
+  private var PARTIAL:CbType;
 
 	public function new()
   {
@@ -73,6 +83,16 @@ class Battle extends Sprite
     var touchQuad:Quad = new Quad(w, h);
     touchQuad.alpha = 0; // only used to get touch events
     addChildAt(touchQuad, 0);
+
+    PARTIAL = new CbType();
+
+    space.listeners.add(new InteractionListener(CbEvent.BEGIN, InteractionType.COLLISION, CbType.ANY_COMPOUND, CbType.ANY_SHAPE, handleCollision));
+  }
+
+  private function handleCollision(cb:InteractionCallback):Void
+  {
+    var cell1 = cb.int1.castCompound.userData.cell;
+    cell1.build();
   }
 
   private function onTouch(event:TouchEvent):Void

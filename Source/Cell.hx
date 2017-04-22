@@ -13,54 +13,70 @@ typedef SoftBody = Compound;
 
 class Cell
 {
+  private var size:Int;
+  private var team:Int;
+  private var compound:Compound;
+  private var space:Space;
+  
+  public function new(x:Int, y:Int, size:Int, team:Int, space:Space)
+  {
+    this.size = size;
+    this.team = team;
+    this.space = space;
 
-	private var size:Int;
-	private var team:Int;
-	private var compound:Compound;
-	
-	public function new(x:Int, y:Int, size:Int, team:Int, space:Space)
-	{
-		this.size = size;
-		this.team = team;
-
-		var poly = new GeomPoly(Polygon.regular(size, size, Math.round(size/2)));
+    var poly = new GeomPoly(Polygon.regular(size, size, Math.round(size/2)));
     compound = polygonalBody(Vec2.get(x, y), 10,  15, 30,  10, poly);
     compound.space = space;
-	}
+  }
 
-	public function moveToward(x:Float, y:Float):Void
-	{
-		var m = Vec2.get(x, y);
-		for (body in compound.bodies)
-		{
-			var d = m.sub(body.position);
-			var len = Vec2.distance(body.position, m) * size / 4;
-			body.applyImpulse(Vec2.weak(d.x/len, d.y/len));
-		}
-	}
+  public function build():Void
+  {
+    if (compound != null)
+    {
+      compound.space = null;
+    }
+    if (size > 20)
+    {
+      size--;
+      var poly = new GeomPoly(Polygon.regular(size, size, Math.round(size/2)));
+      compound = polygonalBody(getPosition(), 10,  15, 30,  10, poly);
+      compound.space = space;
+    }
+  }
 
-	public function getPosition():Vec2
-	{
-		var p = Vec2.get(0, 0);
-		for (body in compound.bodies)
-		{
-			p.addeq(body.position);
-		}
-		p.muleq(1 / compound.bodies.length);
-		return p;
-	}
+  public function moveToward(x:Float, y:Float):Void
+  {
+    var m = Vec2.get(x, y);
+    for (body in compound.bodies)
+    {
+      var d = m.sub(body.position);
+      var len = Vec2.distance(body.position, m) * size / 4;
+      body.applyImpulse(Vec2.weak(d.x/len, d.y/len));
+    }
+  }
 
-	public function getSize():Int
-	{
-		return size;
-	}
+  public function getPosition():Vec2
+  {
+    var p = Vec2.get(0, 0);
+    for (body in compound.bodies)
+    {
+      p.addeq(body.position);
+    }
+    p.muleq(1 / compound.bodies.length);
+    return p;
+  }
 
-	public function getTeam():Int
-	{
-		return team;
-	}
+  public function getSize():Int
+  {
+    return size;
+  }
 
-	private function polygonalBody(position:Vec2, thickness:Float, discretisation:Float, frequency:Float, damping:Float, poly:GeomPoly):SoftBody
+  public function getTeam():Int
+  {
+    return team;
+  }
+
+  private function polygonalBody(position:Vec2, thickness:Float, discretisation:Float, frequency:Float, damping:Float, poly:GeomPoly):SoftBody
   {
     var body = new SoftBody();
 
@@ -68,6 +84,7 @@ class Cell
     var outerPoints = [];
     var innerPoints = [];
     var refEdges = [];
+    body.userData.cell = this;
     body.userData.refEdges = refEdges;
 
     var inner = poly.inflate(-thickness);
