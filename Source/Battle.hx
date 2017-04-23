@@ -354,20 +354,14 @@ class Battle extends Sprite
     {
       if (!cell.isAlive()) continue;
 
-      canvas.beginFill(switch(cell.getTeam())
-        {
-          case 1 : 0xff0000;
-          case 2 : 0x0000ff;
-          case 3 : 0x55ffcc;
-          case _ : 0x000000;
-        });
+      canvas.beginFill(Constants.getColor(cell.getTeam()));
       canvas.drawPolygon(cell.getDisplayPolygon());
       canvas.endFill();
     }
 
     for (f in food)
     {
-      canvas.beginFill(0x00ff00);
+      canvas.beginFill(0xABCB89);
       var p = f.getPosition();
       canvas.drawCircle(p.x, p.y, 10);
       canvas.endFill();

@@ -20,6 +20,7 @@ class Chip extends Sprite
     var image1:Image = new Image(Game.assets.getTexture("chip"));
     image1.x = 0;
     image1.y = 0;
+    image1.scaleX = image1.scaleY = .5;
     addChild(image1);
 
     addEventListener(TouchEvent.TOUCH, function(event:TouchEvent)

@@ -44,6 +44,9 @@ class Game extends Sprite
   {
     Game.assets = assets;
 
+    var bg:Quad = new Quad(stage.stageWidth, stage.stageHeight, 0xECF0F1);
+    addChild(bg);
+
     player = new Player();
     opponent1 = new Player();
     opponent2 = new Player();
@@ -113,10 +116,13 @@ class Game extends Sprite
 
   private function addChips():Void
   {
-    var chip = new Chip(10);
-    chip.x = 400;
-    chip.y = 500;
-    addChild(chip);
+    for (i in 0...5)
+    {
+      var chip = new Chip(10);
+      chip.x = 300 + i * chip.width;
+      chip.y = 525;
+      addChild(chip);
+    }
   }
 
   private function updateAmounts():Void
