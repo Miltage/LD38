@@ -24,24 +24,38 @@ class Cell
     this.team = team;
     this.space = space;
 
-    var poly = new GeomPoly(Polygon.regular(size, size, Math.round(size/2)));
-    compound = polygonalBody(Vec2.get(x, y), 10,  15, 30,  10, poly);
-    compound.space = space;
+    build(Vec2.get(x, y));
   }
 
-  public function build():Void
+  public function build(p:Vec2 = null):Void
   {
     if (compound != null)
     {
       compound.space = null;
     }
-    if (size > 20)
+    if (isAlive())
     {
-      size--;
       var poly = new GeomPoly(Polygon.regular(size, size, Math.round(size/2)));
-      compound = polygonalBody(getPosition(), 10,  15, 30,  10, poly);
+      compound = polygonalBody(p != null ? p : getPosition(), 10,  15, 30,  10, poly);
       compound.space = space;
     }
+  }
+
+  public function grow():Void
+  {
+    size++;
+    build();
+  }
+
+  public function shrink():Void
+  {
+    size--;
+    build();
+  }
+
+  public function isAlive():Bool
+  {
+    return size > 20;
   }
 
   public function moveToward(x:Float, y:Float):Void

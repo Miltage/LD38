@@ -86,13 +86,29 @@ class Battle extends Sprite
 
     PARTIAL = new CbType();
 
-    space.listeners.add(new InteractionListener(CbEvent.BEGIN, InteractionType.COLLISION, CbType.ANY_COMPOUND, CbType.ANY_SHAPE, handleCollision));
+    space.listeners.add(new InteractionListener(CbEvent.BEGIN, InteractionType.COLLISION, CbType.ANY_COMPOUND, CbType.ANY_COMPOUND, handleCollision));
   }
 
   private function handleCollision(cb:InteractionCallback):Void
   {
-    var cell1 = cb.int1.castCompound.userData.cell;
-    cell1.build();
+    if (Std.is(cb.int1.castCompound, Cell.SoftBody) && Std.is(cb.int2.castCompound, Cell.SoftBody))
+    {
+      var cell1 = cb.int1.castCompound.userData.cell;
+      var cell2 = cb.int2.castCompound.userData.cell;
+      if (cell1 == null || cell2 == null)
+        return;
+
+      if (cell1.getSize() > cell2.getSize())
+      {
+        cell1.grow();
+        cell2.shrink();
+      }
+      else
+      {
+        cell1.shrink();
+        cell2.grow();
+      }
+    }
   }
 
   private function onTouch(event:TouchEvent):Void
@@ -138,7 +154,7 @@ class Battle extends Sprite
     var d = Max.INT_MAX_VALUE;
     for (c in cells)
     {
-      if (c != cell && c.getTeam() != cell.getTeam())
+      if (c != cell && c.getTeam() != cell.getTeam() && c.isAlive())
       {
         var dist = Vec2.distance(c.getPosition(), cell.getPosition());
         if (dist < d)
