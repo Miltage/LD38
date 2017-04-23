@@ -194,6 +194,11 @@ class Battle extends Sprite
         }
       }
     }
+
+    for (f in food)
+    {
+      f.moveRandomly();
+    }
   }
 
   private function postUpdate(deltaTime:Float)

@@ -22,6 +22,11 @@ class Food
     body.userData.item = this;
   }
 
+  public function moveRandomly():Void
+  {
+    body.applyImpulse(Vec2.weak(Math.random() - 0.5, Math.random() - 0.5).mul(10));
+  }
+
   public function getPosition():Vec2
   {
     return body.position;
