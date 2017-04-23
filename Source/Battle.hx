@@ -39,6 +39,7 @@ class Battle extends Sprite
 	private var space:Space;
 	private var prevTime:Int;
   private var cells:Array<Cell>;
+  private var food:Array<Food>;
 
   private var PARTIAL:CbType;
 
@@ -69,12 +70,19 @@ class Battle extends Sprite
     floor.space = space;
 
     cells = [];
+    food = [];
 
     for (i in 0...5)
     {
       var cell:Cell = new Cell(Math.round(Constants.CenterX - Math.random() * w/2 + w/4), Math.round(Constants.CenterY - Math.random() * h/2 + h/4)
         , 20 + Math.round(Math.random() * 20), Math.random() > .5 ? 1 : 2, space);
       cells.push(cell);
+    }
+
+    for (i in 0...10)
+    {
+      var f:Food = new Food(Math.round(Constants.CenterX - Math.random() * w/2 + w/4), Math.round(Constants.CenterY - Math.random() * h/2 + h/4), space);
+      food.push(f);
     }
 
     addEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -87,6 +95,7 @@ class Battle extends Sprite
     PARTIAL = new CbType();
 
     space.listeners.add(new InteractionListener(CbEvent.BEGIN, InteractionType.COLLISION, CbType.ANY_COMPOUND, CbType.ANY_COMPOUND, handleCollision));
+    space.listeners.add(new InteractionListener(CbEvent.BEGIN, InteractionType.COLLISION, CbType.ANY_COMPOUND, CbType.ANY_BODY, handleItemCollision));
   }
 
   private function handleCollision(cb:InteractionCallback):Void
@@ -108,6 +117,15 @@ class Battle extends Sprite
         cell1.shrink();
         cell2.grow();
       }
+    }
+  }
+
+  private function handleItemCollision(cb:InteractionCallback):Void
+  {
+    if (Std.is(cb.int1.castCompound, Cell.SoftBody) && Std.is(cb.int2.castBody.userData.item, Food))
+    {
+      cb.int1.castCompound.userData.cell.grow();
+      cb.int2.castBody.space = null;
     }
   }
 
