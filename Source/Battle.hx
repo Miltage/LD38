@@ -35,6 +35,7 @@ class Battle extends Sprite
 {
 	public static inline var VEL_ITERATIONS:Int = 10;
   public static inline var POS_ITERATIONS:Int = 10;
+  public static inline var MIN_DISTANCE:Int = 100;
 
 	private var space:Space;
 	private var prevTime:Int;
@@ -72,22 +73,36 @@ class Battle extends Sprite
     cells = [];
     food = [];
 
+    var cx;
+    var cy;
+
     for (i in 0...5)
     {
-      var cell:Cell = new Cell(Math.round(Constants.CenterX - Math.random() * w/2 + w/4), Math.round(Constants.CenterY - Math.random() * h/2 + h/4)
-        , 20 + Math.round(Math.random() * 20), Math.random() > .5 ? 1 : 2, space);
+      do {
+        cx = Math.round(Constants.CenterX - Math.random() * w/2 + w/4);
+        cy = Math.round(Constants.CenterY - Math.random() * h/2 + h/4);
+      } while (distanceToCell(getClosestCell(cx, cy), cx, cy) < MIN_DISTANCE);
+      var cell:Cell = new Cell(cx, cy, 20 + Math.round(Math.random() * 20), Math.random() > .5 ? 1 : 2, space);
       cells.push(cell);
     }
 
     for (i in 0...10)
     {
-      var f:Food = new Food(Math.round(Constants.CenterX - Math.random() * w/2 + w/4), Math.round(Constants.CenterY - Math.random() * h/2 + h/4), space);
+      do {
+        cx = Math.round(Constants.CenterX - Math.random() * w/2 + w/4);
+        cy = Math.round(Constants.CenterY - Math.random() * h/2 + h/4);
+      } while (distanceToCell(getClosestCell(cx, cy), cx, cy) < MIN_DISTANCE);
+      var f:Food = new Food(cx, cy, space);
       food.push(f);
     }
 
     for (i in 0...100)
     {
-      var d:Dirt = new Dirt(Math.round(Constants.CenterX - Math.random() * w + w/2), Math.round(Constants.CenterY - Math.random() * h + h/2), space);
+      do {
+        cx = Math.round(Constants.CenterX - Math.random() * w + w/2);
+        cy = Math.round(Constants.CenterY - Math.random() * h + h/2);
+      } while (distanceToCell(getClosestCell(cx, cy), cx, cy) < MIN_DISTANCE);
+      var d:Dirt = new Dirt(cx, cy, space);
     }
 
     addEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -188,6 +203,30 @@ class Battle extends Sprite
       if (c.isAlive())
         num++;
     return num;
+  }
+
+  private function distanceToCell(cell:Cell, x:Int, y:Int):Float
+  {
+    if (cell == null)
+      return MIN_DISTANCE;
+    return Vec2.distance(cell.getPosition(), Vec2.weak(x, y));
+  }
+
+  private function getClosestCell(x:Int, y:Int):Cell
+  {
+    var p = Vec2.get(x, y);
+    var result = null;
+    var d = Max.INT_MAX_VALUE;
+    for (c in cells)
+    {
+      var dist = Vec2.distance(p, c.getPosition());
+      if (dist < d)
+      {
+        result = c;
+        d = Math.round(dist);
+      }
+    }
+    return result;
   }
 
   private function getClosestEnemy(cell:Cell):Cell

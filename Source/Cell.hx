@@ -7,6 +7,8 @@ import nape.geom.Vec2;
 import nape.shape.Edge;
 import nape.shape.Polygon;
 import nape.space.Space;
+import nape.phys.BodyType;
+import nape.shape.Circle;
 import nape.constraint.PivotJoint;
 
 typedef SoftBody = Compound;
