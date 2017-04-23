@@ -204,13 +204,21 @@ class Battle extends Sprite
 
   private function preStep(deltaTime:Float):Void
   {
-    if (!started)
-      return;
 
     for (body in space.liveBodies)
     {
       body.velocity.x *= 0.95;
       body.velocity.y *= 0.95;
+    }
+    
+    if (!started)
+      return;
+
+    var remainingTeams = calcTeamsLeft();
+    if (remainingTeams.length == 1)
+    {
+      dispatchEvent(new Event("end", true, remainingTeams));
+      started = false;
     }
 
     for (cell in cells)
@@ -250,6 +258,16 @@ class Battle extends Sprite
       if (c.isAlive())
         num++;
     return num;
+  }
+
+  private function calcTeamsLeft():Array<Int>
+  {
+    var teams = [];
+    for (c in cells)
+      if (c.isAlive())
+        if (teams.indexOf(c.getTeam()) < 0)
+          teams.push(c.getTeam());
+    return teams;
   }
 
   private function distanceToCell(cell:Cell, x:Int, y:Int):Float
