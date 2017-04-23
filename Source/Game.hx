@@ -55,6 +55,7 @@ class Game extends Sprite
     addChild(overlay);
     drawOverlay();
     updateAmounts();
+    addChips();
 
     startButton = new Button(Game.assets.getTexture("button_idle.png"), "Start", Game.assets.getTexture("button_down.png"), Game.assets.getTexture("button_hover.png"));
     addChild(startButton);
@@ -108,6 +109,14 @@ class Game extends Sprite
     opponent2Cash.autoSize = TextFieldAutoSize.BOTH_DIRECTIONS;
     opponent2Cash.y = 10;
     addChild(opponent2Cash);
+  }
+
+  private function addChips():Void
+  {
+    var chip = new Chip(10);
+    chip.x = 400;
+    chip.y = 500;
+    addChild(chip);
   }
 
   private function updateAmounts():Void
