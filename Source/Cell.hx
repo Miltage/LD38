@@ -61,12 +61,10 @@ class Cell
   public function moveToward(x:Float, y:Float):Void
   {
     var m = Vec2.get(x, y);
-    for (body in compound.bodies)
-    {
-      var d = m.sub(body.position);
-      var len = Vec2.distance(body.position, m) * size / 4;
-      body.applyImpulse(Vec2.weak(d.x/len, d.y/len));
-    }
+    var body = compound.bodies.at(Math.floor(Math.random() * compound.bodies.length));
+    var d = m.sub(body.position);
+    var len = Vec2.distance(body.position, m) * size / 150;
+    body.applyImpulse(Vec2.weak(d.x/len, d.y/len));
   }
 
   public function getPosition():Vec2
