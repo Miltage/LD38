@@ -116,10 +116,26 @@ class Game extends Sprite
 
   private function addChips():Void
   {
-    for (i in 0...5)
+    for (i in 0...4)
     {
-      var chip = new Chip(10);
+      var chip = new Chip(5, true);
+      chip.x = 100 + i * chip.width;
+      chip.y = 525;
+      addChild(chip);
+    }
+
+    for (i in 0...4)
+    {
+      var chip = new Chip(10, true);
       chip.x = 300 + i * chip.width;
+      chip.y = 525;
+      addChild(chip);
+    }
+
+    for (i in 0...4)
+    {
+      var chip = new Chip(20, true);
+      chip.x = 500 + i * chip.width;
       chip.y = 525;
       addChild(chip);
     }

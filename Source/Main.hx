@@ -73,7 +73,9 @@ class Main extends Sprite {
 
     Timer.delay(function()
     {
-      assets.addTexture("chip", Texture.fromBitmapData(Assets.getBitmapData("assets/chip.png")));
+      assets.addTexture("chip_5", Texture.fromBitmapData(Assets.getBitmapData("assets/chip_5.png")));
+      assets.addTexture("chip_10", Texture.fromBitmapData(Assets.getBitmapData("assets/chip_10.png")));
+      assets.addTexture("chip_20", Texture.fromBitmapData(Assets.getBitmapData("assets/chip_20.png")));
       var buttonTexture:Texture = Texture.fromBitmapData(Assets.getBitmapData("assets/button.png"));
       var buttonAtlas:Xml = Xml.parse(Assets.getText("assets/button.xml")).firstElement();
       assets.addTextureAtlas("button", new TextureAtlas(buttonTexture, buttonAtlas));
