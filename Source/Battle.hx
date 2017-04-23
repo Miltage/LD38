@@ -45,12 +45,20 @@ class Battle extends Sprite
   private var dirt:Array<Dirt>;
 
   private var canvas:Canvas;
+  private var started:Bool;
 
 	public function new()
   {
     super();
 
+    started = false;
+
     addEventListener(Event.ADDED_TO_STAGE, start);
+  }
+
+  public function begin():Void
+  {
+    started = true;
   }
 
   private function start(e:Event):Void
@@ -196,6 +204,9 @@ class Battle extends Sprite
 
   private function preStep(deltaTime:Float):Void
   {
+    if (!started)
+      return;
+
     for (body in space.liveBodies)
     {
       body.velocity.x *= 0.95;
@@ -325,7 +336,7 @@ class Battle extends Sprite
 
     if (space != null && !noStepsNeeded)
     {
-      Main.debug.draw(space);
+      //Main.debug.draw(space);
     }
     if (!noStepsNeeded)
     {

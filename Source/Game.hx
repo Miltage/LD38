@@ -1,6 +1,7 @@
 package;
 
 import starling.core.Starling;
+import starling.display.Button;
 import starling.display.Quad;
 import starling.display.Sprite;
 import starling.display.MovieClip;
@@ -9,6 +10,8 @@ import starling.utils.Color;
 import starling.utils.AssetManager;
 import starling.display.Image;
 import starling.events.Event;
+import starling.events.TouchEvent;
+import starling.events.TouchPhase;
 
 import openfl.display.Bitmap;
 import openfl.Vector;
@@ -16,6 +19,8 @@ import openfl.Vector;
 class Game extends Sprite
 {
   public static var assets:AssetManager;
+
+  private var startButton:Button;
 
   public function new()
   {
@@ -28,6 +33,20 @@ class Game extends Sprite
 
     var battle:Battle = new Battle();
     addChild(battle);
+
+    startButton = new Button(Game.assets.getTexture("button_idle.png"), "Start", Game.assets.getTexture("button_down.png"), Game.assets.getTexture("button_hover.png"));
+    addChild(startButton);
+    startButton.fontSize = 24;
+    startButton.x = Constants.CenterX - startButton.width/2;
+
+    startButton.addEventListener(TouchEvent.TOUCH, function(event:TouchEvent)
+    {
+      if (event.getTouch(startButton, TouchPhase.BEGAN) != null)
+      {
+        battle.begin();
+        startButton.visible = false;
+      }
+    });
 
     /*var image1:Image = new Image(Game.assets.getTexture("run"));
     image1.x = 0;

@@ -1,0 +1,5 @@
+<TextureAtlas imagePath="button.png">
+	<SubTexture name="button_down.png" x="0" y="0" width="202" height="82"/>
+	<SubTexture name="button_hover.png" x="0" y="168" width="202" height="82"/>
+	<SubTexture name="button_idle.png" x="0" y="84" width="202" height="82"/>
+</TextureAtlas>

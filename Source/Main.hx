@@ -73,10 +73,10 @@ class Main extends Sprite {
 
     Timer.delay(function()
     {
-      assets.addTexture("run", Texture.fromBitmapData(Assets.getBitmapData("assets/run.png")));
-      var runTexture:Texture = Texture.fromBitmapData(Assets.getBitmapData("assets/sprites.png"));
-      var runAtlas:Xml = Xml.parse(Assets.getText("assets/sprites.xml")).firstElement();
-      assets.addTextureAtlas("run", new TextureAtlas(runTexture, runAtlas));
+      //assets.addTexture("button", Texture.fromBitmapData(Assets.getBitmapData("assets/button.png")));
+      var buttonTexture:Texture = Texture.fromBitmapData(Assets.getBitmapData("assets/button.png"));
+      var buttonAtlas:Xml = Xml.parse(Assets.getText("assets/button.xml")).firstElement();
+      assets.addTextureAtlas("button", new TextureAtlas(buttonTexture, buttonAtlas));
 
       onComplete(assets);
     }, 0);
