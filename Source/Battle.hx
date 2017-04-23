@@ -126,6 +126,7 @@ class Battle extends Sprite
     {
       cb.int1.castCompound.userData.cell.grow();
       cb.int2.castBody.space = null;
+      food.remove(cast(cb.int2.castBody.userData.item, Food));
     }
   }
 
@@ -153,10 +154,19 @@ class Battle extends Sprite
     for (cell in cells)
     {
       var target = getClosestEnemy(cell);
-      if (target != null)
+      if (target != null && target.getSize() < cell.getSize())
       {
         var p = target.getPosition();
         cell.moveToward(p.x, p.y);
+      }
+      else
+      {
+        var food = getClosestFood(cell);
+        if (food != null)
+        {
+          var p = food.getPosition();
+          cell.moveToward(p.x, p.y);
+        }
       }
     }
   }
@@ -180,6 +190,22 @@ class Battle extends Sprite
           result = c;
           d = Math.round(dist);
         }
+      }
+    }
+    return result;
+  }
+
+  private function getClosestFood(cell:Cell):Food
+  {
+    var result = null;
+    var d = Max.INT_MAX_VALUE;
+    for (f in food)
+    {
+      var dist = Vec2.distance(f.getPosition(), cell.getPosition());
+      if (dist < d)
+      {
+        result = f;
+        d = Math.round(dist);
       }
     }
     return result;

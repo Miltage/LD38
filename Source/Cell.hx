@@ -70,11 +70,14 @@ class Cell
   public function getPosition():Vec2
   {
     var p = Vec2.get(0, 0);
-    for (body in compound.bodies)
+    if (compound != null)
     {
-      p.addeq(body.position);
+      for (body in compound.bodies)
+      {
+        p.addeq(body.position);
+      }
+      p.muleq(1 / compound.bodies.length);
     }
-    p.muleq(1 / compound.bodies.length);
     return p;
   }
 
