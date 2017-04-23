@@ -122,7 +122,7 @@ class Battle extends Sprite
       do {
         cx = Math.round(Constants.CenterX - Math.random() * w/2 + w/4);
         cy = Math.round(Constants.CenterY - Math.random() * h/2 + h/4);
-      } while (distanceToCell(getClosestCell(cx, cy), cx, cy) < MIN_DISTANCE);
+      } while (!farEnough(getClosestCell(cx, cy), cx, cy, MIN_DISTANCE/2));
       var f:Food = new Food(cx, cy, space);
       food.push(f);
     }
@@ -132,7 +132,7 @@ class Battle extends Sprite
       do {
         cx = Math.round(Constants.CenterX - Math.random() * w + w/2);
         cy = Math.round(Constants.CenterY - Math.random() * h + h/2);
-      } while (distanceToCell(getClosestCell(cx, cy), cx, cy) < MIN_DISTANCE);
+      } while (!farEnough(getClosestCell(cx, cy), cx, cy, MIN_DISTANCE/4));
       var d:Dirt = new Dirt(cx, cy, space);
       dirt.push(d);
     }
@@ -174,8 +174,8 @@ class Battle extends Sprite
 
       var p1 = cell1.getPosition().sub(cell2.getPosition());
       var p2 = cell2.getPosition().sub(cell1.getPosition());
-      cell1.push(p1.x * 0.05, p1.y * 0.05);
-      cell2.push(p2.x * 0.05, p2.y * 0.05);
+      cell1.push(p1.x * 0.5 / cell1.getSize(), p1.y * 0.5 / cell1.getSize());
+      cell2.push(p2.x * 0.5 / cell2.getSize(), p2.y * 0.5 / cell2.getSize());
     }
   }
 
@@ -257,6 +257,11 @@ class Battle extends Sprite
     if (cell == null)
       return MIN_DISTANCE;
     return Vec2.distance(cell.getPosition(), Vec2.weak(x, y));
+  }
+
+  private function farEnough(cell:Cell, x:Int, y:Int, dist:Float):Bool
+  {
+    return distanceToCell(cell, x, y) - cell.getSize() >= dist;
   }
 
   private function getClosestCell(x:Int, y:Int):Cell
@@ -370,7 +375,7 @@ class Battle extends Sprite
 
     for (d in dirt)
     {
-      canvas.beginFill(0x000000);
+      canvas.beginFill(0x000000, 0.5);
       var p = d.getPosition();
       canvas.drawCircle(p.x, p.y, 4);
       canvas.endFill();
