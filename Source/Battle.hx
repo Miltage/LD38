@@ -216,7 +216,7 @@ class Battle extends Sprite
     for (cell in cells)
     {
       var target = getClosestEnemy(cell);
-      if (target != null && (target.getSize() < cell.getSize() || calcNumAlive() <= 2))
+      if (target != null && (target.getSize() < cell.getSize() || food.length == 0))
       {
         var p = target.getPosition();
         cell.moveToward(p.x, p.y);
