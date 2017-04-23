@@ -122,8 +122,8 @@ class Battle extends Sprite
   {
     if (Std.is(cb.int1.castCompound, Cell.SoftBody) && Std.is(cb.int2.castCompound, Cell.SoftBody))
     {
-      var cell1 = cb.int1.castCompound.userData.cell;
-      var cell2 = cb.int2.castCompound.userData.cell;
+      var cell1:Cell = cb.int1.castCompound.userData.cell;
+      var cell2:Cell = cb.int2.castCompound.userData.cell;
       if (cell1 == null || cell2 == null)
         return;
 
@@ -137,6 +137,11 @@ class Battle extends Sprite
         cell1.shrink();
         cell2.grow();
       }
+
+      var p1 = cell1.getPosition().sub(cell2.getPosition());
+      var p2 = cell2.getPosition().sub(cell1.getPosition());
+      cell1.push(p1.x * 0.05, p1.y * 0.05);
+      cell2.push(p2.x * 0.05, p2.y * 0.05);
     }
   }
 

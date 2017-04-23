@@ -69,6 +69,15 @@ class Cell
     body.applyImpulse(Vec2.weak(d.x/len, d.y/len));
   }
 
+  public function push(x:Float, y:Float)
+  {
+    var m = Vec2.get(x, y);
+    for (body in compound.bodies)
+    {
+      body.applyImpulse(m);
+    }
+  }
+
   public function getPosition():Vec2
   {
     var p = Vec2.get(0, 0);
