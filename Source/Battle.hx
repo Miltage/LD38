@@ -6,6 +6,7 @@ import nape.callbacks.InteractionCallback;
 import nape.callbacks.InteractionListener;
 import nape.callbacks.PreCallback;
 import nape.callbacks.PreFlag;
+import starling.display.Canvas;
 import starling.display.Quad;
 import starling.utils.Color;
 import starling.events.Event;
@@ -41,8 +42,9 @@ class Battle extends Sprite
 	private var prevTime:Int;
   private var cells:Array<Cell>;
   private var food:Array<Food>;
+  private var dirt:Array<Dirt>;
 
-  private var PARTIAL:CbType;
+  private var canvas:Canvas;
 
 	public function new()
   {
@@ -72,6 +74,7 @@ class Battle extends Sprite
 
     cells = [];
     food = [];
+    dirt = [];
 
     var cx;
     var cy;
@@ -103,6 +106,7 @@ class Battle extends Sprite
         cy = Math.round(Constants.CenterY - Math.random() * h + h/2);
       } while (distanceToCell(getClosestCell(cx, cy), cx, cy) < MIN_DISTANCE);
       var d:Dirt = new Dirt(cx, cy, space);
+      dirt.push(d);
     }
 
     addEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -112,7 +116,9 @@ class Battle extends Sprite
     touchQuad.alpha = 0; // only used to get touch events
     addChildAt(touchQuad, 0);
 
-    PARTIAL = new CbType();
+    canvas = new Canvas();
+    //canvas.filter = new starling.filters.BlurFilter();
+    addChild(canvas);
 
     space.listeners.add(new InteractionListener(CbEvent.BEGIN, InteractionType.COLLISION, CbType.ANY_COMPOUND, CbType.ANY_COMPOUND, handleCollision));
     space.listeners.add(new InteractionListener(CbEvent.BEGIN, InteractionType.COLLISION, CbType.ANY_COMPOUND, CbType.ANY_BODY, handleItemCollision));
@@ -299,12 +305,38 @@ class Battle extends Sprite
 
     if (space != null && !noStepsNeeded)
     {
-      Main.debug.draw(space);
+      //Main.debug.draw(space);
     }
     if (!noStepsNeeded)
     {
       postUpdate(deltaTime * 0.001);
       Main.debug.flush();
+    }
+
+    canvas.clear();
+    for (cell in cells)
+    {
+      if (!cell.isAlive()) continue;
+
+      canvas.beginFill(cell.getTeam() == 1 ? 0xff0000 : 0x0000ff);
+      canvas.drawPolygon(cell.getDisplayPolygon());
+      canvas.endFill();
+    }
+
+    for (f in food)
+    {
+      canvas.beginFill(0x00ff00);
+      var p = f.getPosition();
+      canvas.drawCircle(p.x, p.y, 10);
+      canvas.endFill();
+    }
+
+    for (d in dirt)
+    {
+      canvas.beginFill(0x000000);
+      var p = d.getPosition();
+      canvas.drawCircle(p.x, p.y, 4);
+      canvas.endFill();
     }
   }
 }

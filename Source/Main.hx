@@ -50,6 +50,7 @@ class Main extends Sprite {
     starling.stage.stageWidth = Constants.GameWidth;
     starling.stage.stageHeight = Constants.GameHeight;
     starling.showStats = true;
+    starling.antiAliasing = 12;
     starling.enableErrorChecking = Capabilities.isDebugger;
     starling.addEventListener(Event.ROOT_CREATED, function()
     {

@@ -11,6 +11,8 @@ import nape.phys.BodyType;
 import nape.shape.Circle;
 import nape.constraint.PivotJoint;
 
+import openfl.geom.Point;
+
 typedef SoftBody = Compound;
 
 class Cell
@@ -19,6 +21,8 @@ class Cell
   private var team:Int;
   private var compound:Compound;
   private var space:Space;
+
+  private var display:starling.geom.Polygon;
   
   public function new(x:Int, y:Int, size:Int, team:Int, space:Space)
   {
@@ -37,9 +41,10 @@ class Cell
     }
     if (isAlive())
     {
-      var poly = new GeomPoly(Polygon.regular(size, size, Math.round(size/2)));
+      var poly = new GeomPoly(Polygon.regular(size, size, Math.round(size * 0.75)));
       compound = polygonalBody(p != null ? p : getPosition(), 10,  15, 30,  10, poly);
       compound.space = space;
+      display = null;
     }
   }
 
@@ -62,6 +67,9 @@ class Cell
 
   public function moveToward(x:Float, y:Float):Void
   {
+    if (compound == null)
+      return;
+
     var m = Vec2.get(x, y);
     var body = compound.bodies.at(Math.floor(Math.random() * compound.bodies.length));
     var d = m.sub(body.position);
@@ -100,6 +108,34 @@ class Cell
   public function getTeam():Int
   {
     return team;
+  }
+
+  public function getDisplayPolygon():starling.geom.Polygon
+  {
+    var center = getPosition();
+    if (display == null)
+    {
+      var vertices = [
+        for (body in compound.bodies)
+        {
+          var d = body.position.sub(center).muleq(0.2);
+          new Point(body.position.x + d.x, body.position.y + d.y);
+        }
+      ];
+      vertices.reverse();
+      display = new starling.geom.Polygon(vertices);
+    }
+    else
+    {
+      var i = compound.bodies.length - 1;
+      for (body in compound.bodies)
+      {
+        var d = body.position.sub(center).muleq(0.2);
+        display.setVertex(i, body.position.x + d.x, body.position.y + d.y);
+        i--;
+      }
+    }
+    return display;
   }
 
   private function polygonalBody(position:Vec2, thickness:Float, discretisation:Float, frequency:Float, damping:Float, poly:GeomPoly):SoftBody
