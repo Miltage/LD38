@@ -79,13 +79,33 @@ class Battle extends Sprite
     var cx;
     var cy;
 
-    for (i in 0...5)
+    for (i in 0...Math.ceil(Math.random() * 3))
     {
       do {
         cx = Math.round(Constants.CenterX - Math.random() * w/2 + w/4);
         cy = Math.round(Constants.CenterY - Math.random() * h/2 + h/4);
       } while (distanceToCell(getClosestCell(cx, cy), cx, cy) < MIN_DISTANCE);
-      var cell:Cell = new Cell(cx, cy, 20 + Math.round(Math.random() * 20), Math.random() > .5 ? 1 : 2, space);
+      var cell:Cell = new Cell(cx, cy, 20 + Math.round(Math.random() * 20), 1, space);
+      cells.push(cell);
+    }
+
+    for (i in 0...Math.ceil(Math.random() * 3))
+    {
+      do {
+        cx = Math.round(Constants.CenterX - Math.random() * w/2 + w/4);
+        cy = Math.round(Constants.CenterY - Math.random() * h/2 + h/4);
+      } while (distanceToCell(getClosestCell(cx, cy), cx, cy) < MIN_DISTANCE);
+      var cell:Cell = new Cell(cx, cy, 20 + Math.round(Math.random() * 20), 2, space);
+      cells.push(cell);
+    }
+
+    for (i in 0...Math.ceil(Math.random() * 3))
+    {
+      do {
+        cx = Math.round(Constants.CenterX - Math.random() * w/2 + w/4);
+        cy = Math.round(Constants.CenterY - Math.random() * h/2 + h/4);
+      } while (distanceToCell(getClosestCell(cx, cy), cx, cy) < MIN_DISTANCE);
+      var cell:Cell = new Cell(cx, cy, 20 + Math.round(Math.random() * 20), 3, space);
       cells.push(cell);
     }
 
@@ -305,7 +325,7 @@ class Battle extends Sprite
 
     if (space != null && !noStepsNeeded)
     {
-      //Main.debug.draw(space);
+      Main.debug.draw(space);
     }
     if (!noStepsNeeded)
     {
@@ -318,7 +338,13 @@ class Battle extends Sprite
     {
       if (!cell.isAlive()) continue;
 
-      canvas.beginFill(cell.getTeam() == 1 ? 0xff0000 : 0x0000ff);
+      canvas.beginFill(switch(cell.getTeam())
+        {
+          case 1 : 0xff0000;
+          case 2 : 0x0000ff;
+          case 3 : 0x55ffcc;
+          case _ : 0x000000;
+        });
       canvas.drawPolygon(cell.getDisplayPolygon());
       canvas.endFill();
     }

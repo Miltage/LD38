@@ -41,7 +41,7 @@ class Cell
     }
     if (isAlive())
     {
-      var poly = new GeomPoly(Polygon.regular(size, size, Math.round(size * 0.75)));
+      var poly = new GeomPoly(Polygon.regular(size, size, Math.round(size / 2)));
       compound = polygonalBody(p != null ? p : getPosition(), 10,  15, 30,  10, poly);
       compound.space = space;
       display = null;
@@ -118,7 +118,7 @@ class Cell
       var vertices = [
         for (body in compound.bodies)
         {
-          var d = body.position.sub(center).muleq(0.2);
+          var d = body.position.sub(center).muleq(8 / size);
           new Point(body.position.x + d.x, body.position.y + d.y);
         }
       ];
@@ -130,7 +130,7 @@ class Cell
       var i = compound.bodies.length - 1;
       for (body in compound.bodies)
       {
-        var d = body.position.sub(center).muleq(0.2);
+        var d = body.position.sub(center).muleq(8 / size);
         display.setVertex(i, body.position.x + d.x, body.position.y + d.y);
         i--;
       }
