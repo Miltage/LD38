@@ -6,7 +6,7 @@ import nape.phys.BodyType;
 import nape.shape.Circle;
 import nape.space.Space;
 
-class Food 
+class Dirt 
 {
   private var space:Space;
   private var body:Body;
@@ -16,7 +16,7 @@ class Food
     this.space = space;
 
     body = new Body(BodyType.DYNAMIC);
-    body.shapes.add(new Circle(10));
+    body.shapes.add(new Circle(4));
     body.position.setxy(x, y);
     body.space = space;
     body.userData.item = this;

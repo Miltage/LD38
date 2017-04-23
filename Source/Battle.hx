@@ -85,6 +85,11 @@ class Battle extends Sprite
       food.push(f);
     }
 
+    for (i in 0...100)
+    {
+      var d:Dirt = new Dirt(Math.round(Constants.CenterX - Math.random() * w + w/2), Math.round(Constants.CenterY - Math.random() * h + h/2), space);
+    }
+
     addEventListener(Event.ENTER_FRAME, onEnterFrame);
     addEventListener(TouchEvent.TOUCH, onTouch);
 
@@ -154,7 +159,7 @@ class Battle extends Sprite
     for (cell in cells)
     {
       var target = getClosestEnemy(cell);
-      if (target != null && target.getSize() < cell.getSize())
+      if (target != null && (target.getSize() < cell.getSize() || calcNumAlive() <= 2))
       {
         var p = target.getPosition();
         cell.moveToward(p.x, p.y);
@@ -174,6 +179,15 @@ class Battle extends Sprite
   private function postUpdate(deltaTime:Float)
   {
 
+  }
+
+  private function calcNumAlive():Int
+  {
+    var num = 0;
+    for (c in cells)
+      if (c.isAlive())
+        num++;
+    return num;
   }
 
   private function getClosestEnemy(cell:Cell):Cell
